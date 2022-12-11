@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <video class="video" width="600px" controls></video>
+    <button class="start-btn">start</button>
+    <button class="stop-btn">stop</button>
+</body>
+<script>
+    let mediaRecorder;
+    let btn = document.querySelector(".start-btn")
+    btn.addEventListener("click", async function () {
+        let videoStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true
+        });
+        let audioStream = await navigator.mediaDevices.getUserMedia({
+            audio:true
+        })
+        let chunks = [];
+        videoStream.getVideoTracks().forEach(t=>chunks.push(t));
+        audioStream.getAudioTracks().forEach(t=>chunks.push(t));
+        console.log('chunks',chunks);
+        let stream = new MediaStream(chunks)
+        mediaRecorder = new MediaRecorder(stream)
+        
+        let data = [];
+        // mediaRecorder.ondataavailable=(e)=>{
+        //     console.log('mediaRecorder',e);
+        //     data.push(e.data)
+        // }
+        // mediaRecorder.onstop=function(e){
+        //     this.stream.getTracks().forEach(t=>t.stop());
+        //     let blob = new Blob(data, {
+        //         type: this.mimeType
+        //     })
+        //     console.log('blob',blob);
+        //     let url = URL.createObjectURL(blob);
+        //     let video = document.querySelector("video")
+        //     video.src = url
+
+        //     let a = document.createElement('a')
+        //     a.href = url
+        //     a.download =new Date().getTime()+'video.webm'
+        //     a.click()
+        // }
+        let chunks2222 = []
+
+        mediaRecorder.addEventListener('dataavailable', function (e) {
+            chunks2222.push(e.data)
+            console.log('stream7777dataavailable',stream);
+        })
+        mediaRecorder.addEventListener('stop', function () {
+            
+            console.log('stream7777stop',chunks2222);
+
+            // let blob = new Blob(chunks2222, {
+            //     type: chunks[0].type
+            // })
+            // let url = URL.createObjectURL(blob)
+ 
+
+        })
+
+
+        // 必须手动启动
+        mediaRecorder.start()
+    })
+
+    let stop = document.querySelector(".stop-btn")
+    stop.addEventListener('click',()=>{
+        mediaRecorder.stop();
+    })
+</script>
+
+</html>
